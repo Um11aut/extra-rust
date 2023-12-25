@@ -13,6 +13,7 @@ fn main() {
     list.print();
 
     list.dublicate_values();
+    list.set(3, 2);
     list.print();
 
     let mut root = node::Node::new('q');

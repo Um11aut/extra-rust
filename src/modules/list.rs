@@ -12,6 +12,8 @@ type Pointer<T> = Option<Rc<RefCell<Node<T>>>>;
 pub struct List<T: std::fmt::Display + Clone> {
     head: Pointer<T>,
     tail: Pointer<T>,
+
+    length: usize,
 }
 
 impl<T: std::fmt::Display + Clone> List<T> {
@@ -25,7 +27,29 @@ impl<T: std::fmt::Display + Clone> List<T> {
         return List {
             head: Some(Rc::clone(&node)),
             tail: Some(node),
+            length: 1,
         };
+    }
+
+    pub fn set(&mut self, value: T, index: usize) {
+        if index < self.length {
+            let mut current = self.head.clone();
+            let mut counter: usize = 0;
+
+            while index != counter {
+                if let Some(node) = current {
+                    current = node.borrow().next.clone();
+
+                    counter += 1;
+                }
+            }
+
+            if let Some(node) = current {
+                node.borrow_mut().element = value;
+            }
+        } else {
+            panic!("Index out of range");
+        }
     }
 
     pub fn add(&mut self, element: T) {
@@ -39,6 +63,7 @@ impl<T: std::fmt::Display + Clone> List<T> {
             tail.borrow_mut().next = Some(Rc::clone(&new_node));
 
             self.tail = Some(new_node);
+            self.length += 1;
         }
     }
 
@@ -80,6 +105,7 @@ impl<T: std::fmt::Display + Clone> List<T> {
 
             current = node.borrow().next.clone();
             node.borrow_mut().next = Some(Rc::clone(&new_node));
+            self.length += 1;
         }
     }
 }
